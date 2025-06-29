@@ -96,7 +96,7 @@ function createExplosion(x, y) {
   }
 }
 
-function drawShip(ctx) {
+function drawShip(ctx, x, y) {
   // размеры
   const rocketWidth = 30;
   const rocketHeight = 60;
@@ -190,7 +190,7 @@ function draw() {
   }
 
   // Нарисуем корабль
-  drawShip(ctx);
+  drawShip(ctx, x, y);
 
   // Удалим метеориты за экраном
   meteors = meteors.filter(m => m.y < canvas.height + m.size);
