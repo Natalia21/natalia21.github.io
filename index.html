@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Космический полёт</title>
+<style>
+  body, html { margin: 0; padding: 0; overflow: hidden; background: black; }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+  <button id="start"> start </button>
+<canvas id="game"></canvas>
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+
+let shipX = 0; // смещение корабля по X
+let shipY = 0; // смещение корабля по Y
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+document.getElementById('start').addEventListener('click', () => {
+  if (typeof DeviceMotionEvent.requestPermission === 'function') {
+    DeviceMotionEvent.requestPermission()
+      .then(permissionState => {
+        alert(permissionState);
+        if (permissionState === 'granted') {
+          window.addEventListener('deviceorientation', handleOrientation);
+        } else {
+          alert('Нет доступа к сенсорам 😔');
+        }
+      })
+      .catch(console.error);
+  } else {
+    // Для Android или старых iOS
+    window.addEventListener('deviceorientation', handleOrientation);
+  }
+});
+
+function handleOrientation(e) {
+  console.log('device orientation', e);
+  alert('deviceorientation');
+  if (e.gamma !== null && e.beta !== null) {
+    // gamma - наклон влево/вправо, beta - вперед/назад
+    shipX = e.gamma;  // примерно от -90 до +90
+    shipY = e.beta;   // примерно от -180 до +180
+  }
+};
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Нарисуем фон - звёзды
+  for (let i = 0; i < 50; i++) {
+    ctx.fillStyle = "white";
+    ctx.fillRect(Math.random()*canvas.width, Math.random()*canvas.height, 2, 2);
+  }
+
+  // Нарисуем корабль
+  const x = canvas.width/2 + shipX*10;  // коэффициент для чувствительности
+  const y = canvas.height/2 + shipY*5;
+  ctx.fillStyle = "lime";
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.lineTo(x-15, y+30);
+  ctx.lineTo(x+15, y+30);
+  ctx.closePath();
+  ctx.fill();
+
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+</body>
+</html>
