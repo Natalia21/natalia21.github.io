@@ -119,17 +119,20 @@ function drawShip(ctx, x, y) {
 
   // крылья
   ctx.fillStyle = "red";
+
+  // левое крыло
   ctx.beginPath();
-  ctx.moveTo(rocketX - 15, rocketY + 30);
-  ctx.lineTo(rocketX, rocketY + 40);
-  ctx.lineTo(rocketX, rocketY + 50);
+  ctx.moveTo(rocketX, rocketY + 40);
+  ctx.lineTo(rocketX - 20, rocketY + 60);
+  ctx.lineTo(rocketX, rocketY + 60);
   ctx.closePath();
   ctx.fill();
 
+  // правое крыло
   ctx.beginPath();
-  ctx.moveTo(rocketX + rocketWidth + 15, rocketY + 30);
-  ctx.lineTo(rocketX + rocketWidth, rocketY + 40);
-  ctx.lineTo(rocketX + rocketWidth, rocketY + 50);
+  ctx.moveTo(rocketX + rocketWidth, rocketY + 40);
+  ctx.lineTo(rocketX + rocketWidth + 20, rocketY + 60);
+  ctx.lineTo(rocketX + rocketWidth, rocketY + 60);
   ctx.closePath();
   ctx.fill();
 
