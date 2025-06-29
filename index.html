@@ -18,10 +18,13 @@ const ctx = canvas.getContext('2d');
 let shipX = 0; // смещение корабля по X
 let shipY = 0; // смещение корабля по Y
 
+let meteors = [];
+
 function resize() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 }
+
 window.addEventListener('resize', resize);
 resize();
 
@@ -51,6 +54,17 @@ function handleOrientation(e) {
   }
 };
 
+function spawnMeteor() {
+  meteors.push({
+    x: Math.random() * canvas.width,
+    y: -50,
+    size: 20 + Math.random() * 30,
+    speed: 2 + Math.random() * 3
+  });
+}
+
+setInterval(spawnMeteor, 1000); // каждые 1 секунда
+
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -70,6 +84,19 @@ function draw() {
   ctx.lineTo(x+15, y+30);
   ctx.closePath();
   ctx.fill();
+
+  // метеориты
+  ctx.fillStyle = "gray";
+  for (let i = 0; i < meteors.length; i++) {
+    const m = meteors[i];
+    m.y += m.speed;
+    ctx.beginPath();
+    ctx.arc(m.x, m.y, m.size / 2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Удалим метеориты за экраном
+  meteors = meteors.filter(m => m.y < canvas.height + m.size);
 
   requestAnimationFrame(draw);
 }
