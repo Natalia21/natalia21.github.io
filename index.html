@@ -79,6 +79,66 @@ function createExplosion(x, y) {
   }
 }
 
+function drawShip(ctx) {
+  // размеры
+  const rocketWidth = 30;
+  const rocketHeight = 60;
+  const rocketX = x - rocketWidth / 2;
+  const rocketY = y;
+
+  // корпус
+  ctx.fillStyle = "#ccc"; // светло-серый
+  ctx.fillRect(rocketX, rocketY, rocketWidth, rocketHeight);
+
+  // нос (треугольник)
+  ctx.fillStyle = "red";
+  ctx.beginPath();
+  ctx.moveTo(x, rocketY - 20);
+  ctx.lineTo(rocketX, rocketY);
+  ctx.lineTo(rocketX + rocketWidth, rocketY);
+  ctx.closePath();
+  ctx.fill();
+
+  // крылья
+  ctx.fillStyle = "red";
+  ctx.beginPath();
+  ctx.moveTo(rocketX - 15, rocketY + 30);
+  ctx.lineTo(rocketX, rocketY + 40);
+  ctx.lineTo(rocketX, rocketY + 50);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.moveTo(rocketX + rocketWidth + 15, rocketY + 30);
+  ctx.lineTo(rocketX + rocketWidth, rocketY + 40);
+  ctx.lineTo(rocketX + rocketWidth, rocketY + 50);
+  ctx.closePath();
+  ctx.fill();
+
+  // иллюминаторы
+  ctx.fillStyle = "#00ccff";
+  ctx.beginPath();
+  ctx.arc(x, rocketY + 15, 4, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.arc(x, rocketY + 30, 4, 0, Math.PI * 2);
+  ctx.fill();
+
+  // огонь
+  const flameColors = ["orange", "yellow", "red"];
+  for (let i = 0; i < 3; i++) {
+    ctx.beginPath();
+    ctx.fillStyle = flameColors[i];
+    const flameX = x + (Math.random() - 0.5) * 10;
+    const flameY = rocketY + rocketHeight + Math.random() * 20;
+    ctx.moveTo(x, rocketY + rocketHeight);
+    ctx.lineTo(flameX, flameY);
+    ctx.lineTo(x + 5, rocketY + rocketHeight);
+    ctx.fill();
+  }
+}
+
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -111,14 +171,7 @@ function draw() {
   }
 
   // Нарисуем корабль
-  ctx.fillStyle = "lime";
-  ctx.beginPath();
-  ctx.moveTo(x, y);
-  ctx.lineTo(x-15, y+30);
-  ctx.lineTo(x+15, y+30);
-  ctx.closePath();
-  ctx.fill();
-
+  drawShip(ctx);
 
   // Удалим метеориты за экраном
   meteors = meteors.filter(m => m.y < canvas.height + m.size);
