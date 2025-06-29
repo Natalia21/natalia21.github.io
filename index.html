@@ -48,8 +48,9 @@ btn.addEventListener('click', () => {
   if (typeof DeviceMotionEvent.requestPermission === 'function') {
     DeviceMotionEvent.requestPermission()
       .then(permissionState => {
-        alert(permissionState);
         if (permissionState === 'granted') {
+          btn.style.display = 'none';
+          isStart = true;
           window.addEventListener('deviceorientation', handleOrientation);
         } else {
           alert('Нет доступа к сенсорам 😔');
