@@ -21,7 +21,8 @@
 </head>
 <body>
   <button id="start"> start </button>
-<canvas id="game"></canvas>
+  <canvas id="game"></canvas>
+  <audio id="explosionSound" src="https://cdn.jsdelivr.net/gh/joshwcomeau/assets@main/explosion.mp3" preload="auto"></audio>
 <script>
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
@@ -189,6 +190,10 @@ function draw() {
       const distance = Math.sqrt(dx * dx + dy * dy);
       if (distance < m.size / 2 + 15) { // 15 — радиус "корабля"
         createExplosion(x, y);
+
+        const boom = document.getElementById('explosionSound');
+        boom.currentTime = 0;
+        boom.play();
       }
     }
   }
