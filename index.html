@@ -22,8 +22,11 @@
 <body>
   <button id="start"> start </button>
   <canvas id="game"></canvas>
-  <audio id="explosionSound" src="https://cdn.jsdelivr.net/gh/joshwcomeau/assets@main/explosion.mp3" preload="auto"></audio>
-<script>
+  <audio id="explosionSound" preload="auto">
+    <source src="./vzryiv.mp3" type="audio/mp3">
+    Ваш браузер не поддерживает аудио.
+  </audio>
+  <script>
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
@@ -44,9 +47,14 @@ window.addEventListener('resize', resize);
 resize();
 
 const btn = document.getElementById('start');
+const boom = document.getElementById('explosionSound');
+
+if (!DeviceMotionEvent) {
+  var DeviceMotionEvent = null;
+}
 
 btn.addEventListener('click', () => {
-  if (typeof DeviceMotionEvent.requestPermission === 'function') {
+  if (DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === 'function') {
     DeviceMotionEvent.requestPermission()
       .then(permissionState => {
         if (permissionState === 'granted') {
@@ -191,7 +199,6 @@ function draw() {
       if (distance < m.size / 2 + 15) { // 15 — радиус "корабля"
         createExplosion(x, y);
 
-        const boom = document.getElementById('explosionSound');
         boom.currentTime = 0;
         boom.play();
       }
