@@ -6,6 +6,17 @@
 <style>
   body, html { margin: 0; padding: 0; overflow: hidden; background: black; }
   canvas { display: block; }
+
+  #start {
+    font-size: 20px;
+    padding: 20px 40px;
+    background: orange;
+    color: #000000;
+    text-transform: capitalize;
+    border-radius: 8px;
+    margin: 20px auto;
+    display: block;
+  }
 </style>
 </head>
 <body>
@@ -21,6 +32,8 @@ let shipY = 0; // смещение корабля по Y
 let meteors = [];
 let explosions = [];
 
+let isStart = false;
+
 function resize() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -29,7 +42,9 @@ function resize() {
 window.addEventListener('resize', resize);
 resize();
 
-document.getElementById('start').addEventListener('click', () => {
+const btn = document.getElementById('start');
+
+btn.addEventListener('click', () => {
   if (typeof DeviceMotionEvent.requestPermission === 'function') {
     DeviceMotionEvent.requestPermission()
       .then(permissionState => {
@@ -44,6 +59,8 @@ document.getElementById('start').addEventListener('click', () => {
   } else {
     // Для Android или старых iOS
     window.addEventListener('deviceorientation', handleOrientation);
+    btn.style.display = 'none';
+    isStart = true;
   }
 });
 
@@ -152,21 +169,23 @@ function draw() {
   const x = canvas.width/2 + shipX*10;  // коэффициент для чувствительности
   const y = canvas.height/2 + shipY*5;
 
-  // метеориты
-  ctx.fillStyle = "gray";
-  for (let i = 0; i < meteors.length; i++) {
-    const m = meteors[i];
-    m.y += m.speed;
-    ctx.beginPath();
-    ctx.arc(m.x, m.y, m.size / 2, 0, Math.PI * 2);
-    ctx.fill();
+  if (isStart) {
+    // метеориты
+    ctx.fillStyle = "gray";
+    for (let i = 0; i < meteors.length; i++) {
+      const m = meteors[i];
+      m.y += m.speed;
+      ctx.beginPath();
+      ctx.arc(m.x, m.y, m.size / 2, 0, Math.PI * 2);
+      ctx.fill();
 
-    // столкновение
-    const dx = m.x - x;
-    const dy = m.y - y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    if (distance < m.size / 2 + 15) { // 15 — радиус "корабля"
-      createExplosion(x, y);
+      // столкновение
+      const dx = m.x - x;
+      const dy = m.y - y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance < m.size / 2 + 15) { // 15 — радиус "корабля"
+        createExplosion(x, y);
+      }
     }
   }
 
