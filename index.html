@@ -19,6 +19,8 @@ let shipX = 0; // смещение корабля по X
 let shipY = 0; // смещение корабля по Y
 
 let meteors = [];
+let explosions = [];
+let gameOver = false;
 
 function resize() {
   canvas.width = window.innerWidth;
@@ -65,6 +67,19 @@ function spawnMeteor() {
 
 setInterval(spawnMeteor, 1000); // каждые 1 секунда
 
+function createExplosion(x, y) {
+  for (let i = 0; i < 30; i++) {
+    explosions.push({
+      x,
+      y,
+      radius: 2 + Math.random() * 4,
+      speedX: (Math.random() - 0.5) * 6,
+      speedY: (Math.random() - 0.5) * 6,
+      life: 60
+    });
+  }
+}
+
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -74,29 +89,61 @@ function draw() {
     ctx.fillRect(Math.random()*canvas.width, Math.random()*canvas.height, 2, 2);
   }
 
-  // Нарисуем корабль
-  const x = canvas.width/2 + shipX*10;  // коэффициент для чувствительности
-  const y = canvas.height/2 + shipY*5;
-  ctx.fillStyle = "lime";
-  ctx.beginPath();
-  ctx.moveTo(x, y);
-  ctx.lineTo(x-15, y+30);
-  ctx.lineTo(x+15, y+30);
-  ctx.closePath();
-  ctx.fill();
+  if (!gameOver) {
+    // координаты корабля
+    const x = canvas.width/2 + shipX*10;  // коэффициент для чувствительности
+    const y = canvas.height/2 + shipY*5;
 
-  // метеориты
-  ctx.fillStyle = "gray";
-  for (let i = 0; i < meteors.length; i++) {
-    const m = meteors[i];
-    m.y += m.speed;
+    // метеориты
+    ctx.fillStyle = "gray";
+    for (let i = 0; i < meteors.length; i++) {
+      const m = meteors[i];
+      m.y += m.speed;
+      ctx.beginPath();
+      ctx.arc(m.x, m.y, m.size / 2, 0, Math.PI * 2);
+      ctx.fill();
+
+      // столкновение
+      const dx = m.x - x;
+      const dy = m.y - y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance < m.size / 2 + 15) { // 15 — радиус "корабля"
+        createExplosion(x, y);
+        gameOver = true;
+        setTimeout(() => {
+          gameOver = false;
+        }, 1500);
+      }
+    }
+
+    // Нарисуем корабль
+    ctx.fillStyle = "lime";
     ctx.beginPath();
-    ctx.arc(m.x, m.y, m.size / 2, 0, Math.PI * 2);
+    ctx.moveTo(x, y);
+    ctx.lineTo(x-15, y+30);
+    ctx.lineTo(x+15, y+30);
+    ctx.closePath();
     ctx.fill();
+
+
+    // Удалим метеориты за экраном
+    meteors = meteors.filter(m => m.y < canvas.height + m.size);
   }
 
-  // Удалим метеориты за экраном
-  meteors = meteors.filter(m => m.y < canvas.height + m.size);
+  // взрывы
+  for (let i = 0; i < explosions.length; i++) {
+    const p = explosions[i];
+    ctx.beginPath();
+    ctx.fillStyle = `rgba(255, ${100 + Math.random() * 155}, 0, ${p.life / 60})`;
+    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+    ctx.fill();
+
+    p.x += p.speedX;
+    p.y += p.speedY;
+    p.life--;
+  }
+
+  explosions = explosions.filter(p => p.life > 0);
 
   requestAnimationFrame(draw);
 }
