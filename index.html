@@ -44,8 +44,6 @@ document.getElementById('start').addEventListener('click', () => {
 });
 
 function handleOrientation(e) {
-  console.log('device orientation', e);
-  alert('deviceorientation');
   if (e.gamma !== null && e.beta !== null) {
     // gamma - наклон влево/вправо, beta - вперед/назад
     shipX = e.gamma;  // примерно от -90 до +90
