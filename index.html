@@ -87,11 +87,11 @@ function spawnMeteor() {
     x: Math.random() * canvas.width,
     y: -50,
     size: 20 + Math.random() * 30,
-    speed: 2 + Math.random() * 3
+    speed: 2 + Math.random() * 6
   });
 }
 
-setInterval(spawnMeteor, 500);
+setInterval(spawnMeteor, 1000);
 
 function createExplosion(x, y) {
   for (let i = 0; i < 30; i++) {
@@ -219,9 +219,7 @@ function draw() {
         createExplosion(x, y);
 
         boom.currentTime = 0;
-        boom.play().catch(e => {
-          alert("Ошибка воспроизведения:" + e);
-        });
+        boom.play();
       }
     }
   }
