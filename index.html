@@ -219,7 +219,9 @@ function draw() {
         createExplosion(x, y);
 
         boom.currentTime = 0;
-        boom.play();
+        boom.play().catch(e => {
+          alert("Ошибка воспроизведения:" + e);
+        });
       }
     }
   }
