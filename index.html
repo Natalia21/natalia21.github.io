@@ -56,27 +56,24 @@ if (!DeviceMotionEvent) {
 }
 
 function handleOrientation(e) {
-  // Угол поворота экрана (0 — портрет, 90/-90 — ландшафт)
-  const orientation = screen.orientation?.angle || window.orientation || 0;
+  let orientation = (screen.orientation?.angle || window.orientation || 0) % 360;
 
-  if (e.gamma !== null && e.beta !== null) {
-    if (orientation === 90) {
-      // Ландшафт, устройство повернуто влево
-      shipX = e.beta;    // наклон вверх/вниз -> движение влево/вправо
-      // shipY = -e.gamma;  // наклон влево/вправо -> движение вверх/вниз
-    } else if (orientation === 270) {
-      // Ландшафт, повернуто вправо
-      shipX = -e.beta;
-      // shipY = e.gamma;
-    } else {
-      // Портретная ориентация
-      shipX = e.gamma;
-      // shipY = e.beta;
-    }
+  if (e.gamma === null || e.beta === null) return;
+
+  let controlAxis;
+
+  if (orientation === 90 || orientation === -90 || orientation === 270) {
+    // Горизонтально (ландшафт)
+    controlAxis = e.beta;
+  } else {
+    // Вертикально (портрет)
+    controlAxis = e.gamma;
   }
 
-  alert('orientation ' + orientation);
-  shipX = Math.max(-45, Math.min(45, shipX));
+  // Обрезаем значения до разумных
+  controlAxis = Math.max(-45, Math.min(45, controlAxis));
+
+  shipX = controlAxis;
 }
 
 btn.addEventListener('click', () => {
@@ -205,10 +202,6 @@ function draw() {
   const y = canvas.height * 0.5;
   const rocketWidth = 30;
   let x = canvas.width / 2 + shipX * 10;
-
-  if (isStart) {
-   alert('X = ' + x + ' Y = ' + y, ' shipX = ', shipX);
-  }
 
   x = Math.max(rocketWidth / 2, Math.min(canvas.width - rocketWidth / 2, x));
 
