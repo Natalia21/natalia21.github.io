@@ -74,6 +74,8 @@ function handleOrientation(e) {
       // shipY = e.beta;
     }
   }
+
+  shipX = Math.max(-45, Math.min(45, shipX));
 }
 
 btn.addEventListener('click', () => {
@@ -199,8 +201,10 @@ function draw() {
   }
 
   // координаты корабля
-  const x = canvas.width/2 + shipX*10;  // коэффициент для чувствительности
   const y = canvas.height * 0.5;
+  const rocketWidth = 30;
+  let x = canvas.width / 2 + shipX * 10;
+  x = Math.max(rocketWidth / 2, Math.min(canvas.width - rocketWidth / 2, x));
 
   if (isStart) {
    alert('X = ' + x + ' Y = ' + y);
