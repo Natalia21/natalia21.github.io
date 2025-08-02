@@ -110,8 +110,8 @@ function handleMotion(event) {
     control = acc.x;  // портретное положение
   }
 
-  // Нормализуем и ограничим
-  shipX = Math.max(-4, Math.min(4, control));
+  let raw = control * 20; // увеличим чувствительность
+  shipX = Math.max(-canvas.width / 2, Math.min(canvas.width / 2, raw));
 }
 
 
