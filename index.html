@@ -59,6 +59,7 @@ function handleOrientation(e) {
   // Угол поворота экрана (0 — портрет, 90/-90 — ландшафт)
   const orientation = screen.orientation?.angle || window.orientation || 0;
 
+  alert('orientation' + orientation);
   if (e.gamma !== null && e.beta !== null) {
     if (orientation === 90) {
       // Ландшафт, устройство повернуто влево
