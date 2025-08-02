@@ -44,6 +44,8 @@ function resize() {
 }
 
 window.addEventListener('resize', resize);
+window.addEventListener('orientationchange', resize);
+
 resize();
 
 const btn = document.getElementById('start');
