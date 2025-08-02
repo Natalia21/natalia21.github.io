@@ -202,7 +202,9 @@ function draw() {
   const x = canvas.width/2 + shipX*10;  // коэффициент для чувствительности
   const y = canvas.height * 0.5;
 
-  alert('X = ' + x + ' Y = ' + y);
+  if (isStart) {
+   alert('X = ' + x + ' Y = ' + y);
+  }
 
   if (isStart) {
     // метеориты
