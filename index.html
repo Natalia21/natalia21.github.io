@@ -75,6 +75,7 @@ function handleOrientation(e) {
     }
   }
 
+  alert('orientation ' + orientation);
   shipX = Math.max(-45, Math.min(45, shipX));
 }
 
@@ -204,11 +205,13 @@ function draw() {
   const y = canvas.height * 0.5;
   const rocketWidth = 30;
   let x = canvas.width / 2 + shipX * 10;
+
+  if (isStart) {
+   alert('X = ' + x + ' Y = ' + y, ' shipX = ', shipX);
+  }
+
   x = Math.max(rocketWidth / 2, Math.min(canvas.width - rocketWidth / 2, x));
 
-  // if (isStart) {
-  //  alert('X = ' + x + ' Y = ' + y);
-  // }
 
   if (isStart) {
     // метеориты
