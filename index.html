@@ -88,7 +88,8 @@ function handleOrientation(e) {
   // Ограничим control, чтобы не скакал
   control = Math.max(-45, Math.min(45, control));
 
-  shipX = control;
+  let raw = control * 10; // чувствительность: 10–30
+  shipX = Math.max(-canvas.width / 2, Math.min(canvas.width / 2, raw));
 }
 
 function handleMotion(event) {
@@ -267,10 +268,8 @@ function draw() {
   // координаты корабля
   const y = canvas.height * 0.5;
   const rocketWidth = 30;
-  let x = canvas.width / 2 + shipX * 10;
-
-  x = Math.max(rocketWidth / 2, Math.min(canvas.width - rocketWidth / 2, x));
-
+  let x = canvas.width / 2 + shipX;
+  x = Math.max(15, Math.min(canvas.width - 15, x));
 
   if (isStart) {
     // метеориты
