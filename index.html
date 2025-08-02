@@ -63,15 +63,15 @@ function handleOrientation(e) {
     if (orientation === 90) {
       // Ландшафт, устройство повернуто влево
       shipX = e.beta;    // наклон вверх/вниз -> движение влево/вправо
-      shipY = -e.gamma;  // наклон влево/вправо -> движение вверх/вниз
+      // shipY = -e.gamma;  // наклон влево/вправо -> движение вверх/вниз
     } else if (orientation === 270) {
       // Ландшафт, повернуто вправо
       shipX = -e.beta;
-      shipY = e.gamma;
+      // shipY = e.gamma;
     } else {
       // Портретная ориентация
       shipX = e.gamma;
-      shipY = e.beta;
+      // shipY = e.beta;
     }
   }
 }
@@ -200,7 +200,7 @@ function draw() {
 
   // координаты корабля
   const x = canvas.width/2 + shipX*10;  // коэффициент для чувствительности
-  const y = canvas.height/2 + shipY*5;
+  const y = canvas.height * 0.7;
 
   if (isStart) {
     // метеориты
