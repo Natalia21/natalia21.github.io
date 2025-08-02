@@ -56,24 +56,39 @@ if (!DeviceMotionEvent) {
 }
 
 function handleOrientation(e) {
-  let orientation = (screen.orientation?.angle || window.orientation || 0) % 360;
+  const gamma = e.gamma; // наклон влево/вправо
+  const beta = e.beta;   // наклон вперёд/назад
 
-  if (e.gamma === null || e.beta === null) return;
+  if (gamma === null || beta === null) return;
 
-  let controlAxis;
+  let angle = (screen.orientation?.angle || window.orientation || 0) % 360;
 
-  if (orientation === 90 || orientation === -90 || orientation === 270) {
-    // Горизонтально (ландшафт)
-    controlAxis = e.beta;
+  // Упростим ориентации
+  if (angle < 0) angle += 360;
+
+  let control = 0;
+
+  if (angle === 0) {
+    // Портрет
+    control = gamma;
+  } else if (angle === 90) {
+    // Ландшафт, телефон повернут влево
+    control = beta;
+  } else if (angle === 270) {
+    // Ландшафт, телефон повернут вправо
+    control = -beta;
   } else {
-    // Вертикально (портрет)
-    controlAxis = e.gamma;
+    // fallback: используем gamma
+    control = gamma;
   }
 
-  // Обрезаем значения до разумных
-  controlAxis = Math.max(-45, Math.min(45, controlAxis));
+  // Иногда при наклоне "на себя" beta резко прыгает в 90+ — фильтруем
+  if (!isFinite(control)) return;
 
-  shipX = controlAxis;
+  // Ограничим control, чтобы не скакал
+  control = Math.max(-45, Math.min(45, control));
+
+  shipX = control;
 }
 
 btn.addEventListener('click', () => {
