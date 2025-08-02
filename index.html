@@ -91,31 +91,82 @@ function handleOrientation(e) {
   shipX = control;
 }
 
+function handleMotion(event) {
+  const acc = event.accelerationIncludingGravity;
+  if (!acc) return;
+
+  // В landscape-режиме устройство лежит на боку,
+  // поэтому X и Y тоже переворачиваются
+  const orientation = (screen.orientation?.angle || window.orientation || 0) % 360;
+
+  let control = 0;
+
+  if (orientation === 90) {
+    control = acc.y;  // телефон повернут влево
+  } else if (orientation === 270 || orientation === -90) {
+    control = -acc.y; // повернут вправо
+  } else {
+    control = acc.x;  // портретное положение
+  }
+
+  // Нормализуем и ограничим
+  shipX = Math.max(-4, Math.min(4, control));
+}
+
+
 btn.addEventListener('click', () => {
   boom.play().then(() => {
     boom.pause();
     boom.currentTime = 0;
   });
 
-  if (DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === 'function') {
+  if (
+    typeof DeviceMotionEvent !== 'undefined' &&
+    typeof DeviceMotionEvent.requestPermission === 'function'
+  ) {
     DeviceMotionEvent.requestPermission()
       .then(permissionState => {
         if (permissionState === 'granted') {
           btn.style.display = 'none';
           isStart = true;
-          window.addEventListener('deviceorientation', handleOrientation);
+          window.addEventListener('devicemotion', handleMotion);
         } else {
           alert('Нет доступа к сенсорам 😔');
         }
       })
       .catch(console.error);
   } else {
-    // Для Android или старых iOS
-    window.addEventListener('deviceorientation', handleOrientation);
+    window.addEventListener('devicemotion', handleMotion);
     btn.style.display = 'none';
     isStart = true;
   }
 });
+
+// btn.addEventListener('click', () => {
+//   boom.play().then(() => {
+//     boom.pause();
+//     boom.currentTime = 0;
+//   });
+
+//   if (DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === 'function') {
+//     DeviceMotionEvent.requestPermission()
+//       .then(permissionState => {
+//         if (permissionState === 'granted') {
+//           btn.style.display = 'none';
+//           isStart = true;
+//           window.addEventListener('deviceorientation', handleOrientation);
+//         } else {
+//           alert('Нет доступа к сенсорам 😔');
+//         }
+//       })
+//       .catch(console.error);
+//   } else {
+//     // Для Android или старых iOS
+//     window.addEventListener('deviceorientation', handleOrientation);
+//     btn.style.display = 'none';
+//     isStart = true;
+//   }
+// });
 
 function spawnMeteor() {
   meteors.push({
